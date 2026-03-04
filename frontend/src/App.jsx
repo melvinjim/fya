@@ -42,7 +42,7 @@ function App() {
 
     try {
       await axios.post(`${API}/credits`, form);
-      alert("Crédito registrado ✅");
+      alert("Crédito registrado");
       setForm({
         client_name: "",
         client_id: "",
@@ -70,9 +70,15 @@ function App() {
     }
   };
 
-  const filteredCredits = credits.filter((c) =>
-    c.client_name.toLowerCase().includes(filter.toLowerCase())
-  );
+  const filteredCredits = credits.filter((c) => {
+    const search = filter.toLowerCase();
+
+    return (
+      c.client_name.toLowerCase().includes(search) ||
+      c.commercial.toLowerCase().includes(search) ||
+      String(c.id).includes(search)
+    );
+  });
 
   return (
     <div style={{ padding: "40px", fontFamily: "Arial", background: "#f4f6f9", minHeight: "100vh" }}>
@@ -103,7 +109,7 @@ function App() {
           <h2>Lista de Créditos</h2>
 
           <input
-            placeholder="Filtrar por nombre..."
+            placeholder="Filtrar por nombre, comercial o No."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             style={{ marginBottom: "20px" }}
@@ -112,6 +118,7 @@ function App() {
           <table border="1" cellPadding="10">
             <thead>
               <tr>
+                <th>No.</th>
                 <th>Cliente</th>
                 <th>Valor</th>
                 <th>Interés</th>
@@ -123,8 +130,14 @@ function App() {
             <tbody>
               {filteredCredits.map((c) => (
                 <tr key={c.id}>
+                  <td>{c.id}</td>
                   <td>{c.client_name}</td>
-                  <td>{c.credit_value}</td>
+                  <td>
+                    {Number(c.credit_value).toLocaleString("es-CO", {
+                      style: "currency",
+                      currency: "COP",
+                    })}
+                  </td>
                   <td>{c.interest_rate}%</td>
                   <td>{c.months}</td>
                   <td>{c.commercial}</td>

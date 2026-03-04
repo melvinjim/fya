@@ -42,7 +42,6 @@ app.post("/credits", async (req, res) => {
       commercial,
     } = req.body;
 
-    // Validación básica
     if (
       !client_name ||
       !client_id ||
@@ -66,13 +65,13 @@ app.post("/credits", async (req, res) => {
     try {
         await transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: "melvinjimenez2708@gmail.com",
+        to: "fyasocialcapital@gmail.com",
         subject: "Nuevo crédito registrado",
         text: `
             Cliente: ${client_name}
             Valor: ${credit_value}
             Comercial: ${commercial}
-            Fecha: ${new Date().toLocaleString()}
+            Fecha: ${newCredit.rows[0].created_at}
         `,
         });
 
